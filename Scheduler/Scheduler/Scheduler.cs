@@ -6,46 +6,25 @@ namespace Scheduler
     public class Scheduler
     {
         private DateTime _calculatedNextRun;
-        public DateTime CalculatedNextRun
-        {
-            get
-            {
-                return _calculatedNextRun;
-            }
-        }
         private UnitsOfTime _unitOfTime; 
-        public UnitsOfTime UnitOfTime
-        {
-            get
-            {
-                return _unitOfTime;
-            }
-        }
         private int _interval;
-        public int Interval
-        {
-            get
-            {
-                return _interval;
-            }
-        }
 
-        public DateTimeKind DateTimeLocalisation { get; set; }
+        private DateTimeKind _dateTimeLocalisation { get; set; }
         public Scheduler()
         {
-            DateTimeLocalisation = DateTimeKind.Local;
+            _dateTimeLocalisation = DateTimeKind.Local;
         }
 
         public bool IsTimeToRun()
         {
-            _calculatedNextRun = CalculateTimeToRun(Interval, UnitOfTime, DateTimeLocalisation);
-            if(CalculatedNextRun < DateTime.Now)
+            _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime, _dateTimeLocalisation);
+            if(_calculatedNextRun < DateTime.Now)
             {
                 do
                 {
                     return true;
                 }
-                while (CalculateTimeToRun(Interval, UnitOfTime, DateTimeLocalisation) == DateTime.Now);
+                while (_calculatedNextRun == DateTime.Now);
             }
             else
             {
@@ -56,7 +35,7 @@ namespace Scheduler
         private DateTime CalculateTimeToRun(int interval, UnitsOfTime unitOfTime, DateTimeKind dateTimeLocalisation)
         {
             DateTime calculatedDateTime; 
-            switch(UnitOfTime)
+            switch(_unitOfTime)
             {
                 case UnitsOfTime.Seconds:
                     calculatedDateTime = DateTime.Now;
