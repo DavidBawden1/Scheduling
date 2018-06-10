@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Scheduler/Scheduler/bin/Debug/netstandard2.0
+/Scheduler/.vs/Scheduler/v15/Server/sqlite3
+/Scheduler/.vs/Scheduler/v15/.suo
+/Scheduler/Scheduler/obj/Debug/netstandard2.0
+/Scheduler/Scheduler/obj
+/.vs/Scheduling/v15
+/.vs
