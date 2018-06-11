@@ -1,6 +1,9 @@
 ﻿using Scheduler.SchedulerUnits;
 using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
+[assembly: InternalsVisibleTo("SchedulerUnitTests")]
 namespace Scheduler
 {
     public class Scheduler
@@ -9,39 +12,38 @@ namespace Scheduler
         private UnitsOfTime _unitOfTime; 
         private int _interval;
 
-        private DateTimeKind _dateTimeLocalisation { get; set; }
         public Scheduler()
         {
-            _dateTimeLocalisation = DateTimeKind.Local;
+
         }
 
         public bool IsTimeToRun()
         {
-            _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime, _dateTimeLocalisation);
-            if(_calculatedNextRun < DateTime.Now)
+            _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime);
+            if (DateTime.Now < _calculatedNextRun)
             {
-                do
-                {
-                    return true;
-                }
-                while (_calculatedNextRun == DateTime.Now);
+                TimeSpan timeToWait;
+                timeToWait = _calculatedNextRun - DateTime.Now;
+                //set up timer and make it tick until time to wait is 0. 
+                return true;
             }
             else
             {
+                _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime);
                 return false;
             }
         }
 
-        private DateTime CalculateTimeToRun(int interval, UnitsOfTime unitOfTime, DateTimeKind dateTimeLocalisation)
+        internal DateTime CalculateTimeToRun(int interval, UnitsOfTime unitOfTime)
         {
             DateTime calculatedDateTime; 
             switch(_unitOfTime)
             {
                 case UnitsOfTime.Seconds:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInSeconds(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Minutes:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInMinutes(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Hours:
                     calculatedDateTime = DateTime.Now;
@@ -62,6 +64,41 @@ namespace Scheduler
                     throw new ArgumentException("The supplied unit of time was not valid!");
             }
             return calculatedDateTime;
+        }
+
+        internal DateTime CalculateTimeToRunInMinutes(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                DateTime calculatedTimeToRunInMinutes;
+                calculatedTimeToRunInMinutes = now.AddMinutes(interval);
+                return calculatedTimeToRunInMinutes;
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
+        }
+
+        /// <summary>
+        /// Returns a scheduled DateTime calculated by second intervals. 
+        /// Defaults to Local time unless UTC is specified. 
+        /// </summary>
+        /// <param name="interval">Interval in seconds</param>
+        /// <param name="dateTimeLocalisation">The localisation of the DateTime. i.e. UTC or Local.</param>
+        /// <returns></returns>
+        internal DateTime CalculateTimeToRunInSeconds(int interval, DateTime now)
+        {
+            if(interval > 0)
+            {
+                DateTime calculatedTimeToRunInSeconds;
+                calculatedTimeToRunInSeconds = now.AddSeconds(interval);
+                return calculatedTimeToRunInSeconds;
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
         }
     }
 }
