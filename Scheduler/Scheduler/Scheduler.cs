@@ -46,10 +46,10 @@ namespace Scheduler
                     calculatedDateTime = CalculateTimeToRunInMinutes(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Hours:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInHours(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Days:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInDays(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Weeks:
                     calculatedDateTime = DateTime.Now;
@@ -64,6 +64,49 @@ namespace Scheduler
                     throw new ArgumentException("The supplied unit of time was not valid!");
             }
             return calculatedDateTime;
+        }
+
+        internal DateTime CalculateTimeToRunInWeeks(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                int intervalInDays = interval * 7;
+                DateTime calculatedTimeToRunInWeeks;
+                calculatedTimeToRunInWeeks = now.AddDays(intervalInDays);
+                return calculatedTimeToRunInWeeks;
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
+        }
+
+        internal DateTime CalculateTimeToRunInDays(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                DateTime calculatedTimeToRunInDays;
+                calculatedTimeToRunInDays = now.AddDays(interval);
+                return calculatedTimeToRunInDays;
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
+        }
+
+        internal DateTime CalculateTimeToRunInHours(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                DateTime calculatedTimeToRunInHours;
+                calculatedTimeToRunInHours = now.AddHours(interval);
+                return calculatedTimeToRunInHours;
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
         }
 
         internal DateTime CalculateTimeToRunInMinutes(int interval, DateTime now)
