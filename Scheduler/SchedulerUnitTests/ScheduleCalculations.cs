@@ -101,5 +101,21 @@ namespace SchedulerUnitTests
             //assert
             Assert.AreEqual(expectedDateTime, actualDateTime);
         }
+
+        [TestMethod]
+        public void CalculateTimeToRunInYears()
+        {
+            //arrange 
+            Scheduler.Scheduler scheduler = new Scheduler.Scheduler();
+            DateTime currentDateTime = new DateTime(2018, 06, 11, 21, 30, 00);
+            DateTime expectedDateTime = new DateTime(2020, 06, 11, 21, 30, 00);
+            int interval = 2;
+
+            //act
+            var actualDateTime = scheduler.CalculateTimeToRunInYears(interval, currentDateTime);
+
+            //assert
+            Assert.AreEqual(expectedDateTime, actualDateTime);
+        }
     }
 }

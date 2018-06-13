@@ -58,12 +58,28 @@ namespace Scheduler
                     calculatedDateTime = CalculateTimeToRunInMonths(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Years:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInYears(interval, DateTime.Now);
                     break;
                 default:
                     throw new ArgumentException("The supplied unit of time was not valid!");
             }
             return calculatedDateTime;
+        }
+
+        internal DateTime CalculateTimeToRunInYears(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                DateTime fromDate = now;
+                DateTime toDate = now.AddYears(interval);
+                int daysInMonth = DateTime.DaysInMonth(toDate.Year, toDate.Month);
+                int day = Math.Min(fromDate.Day, daysInMonth);
+                return toDate = new DateTime(toDate.Year, toDate.Month, day, toDate.Hour, toDate.Minute, toDate.Second);
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
         }
 
         internal DateTime CalculateTimeToRunInMonths(int interval, DateTime now)
@@ -87,9 +103,7 @@ namespace Scheduler
             if (interval > 0)
             {
                 int intervalInDays = interval * 7;
-                DateTime calculatedTimeToRunInWeeks;
-                calculatedTimeToRunInWeeks = now.AddDays(intervalInDays);
-                return calculatedTimeToRunInWeeks;
+                return now.AddDays(intervalInDays);
             }
             else
             {
@@ -101,9 +115,7 @@ namespace Scheduler
         {
             if (interval > 0)
             {
-                DateTime calculatedTimeToRunInDays;
-                calculatedTimeToRunInDays = now.AddDays(interval);
-                return calculatedTimeToRunInDays;
+                return now.AddDays(interval);
             }
             else
             {
@@ -129,9 +141,7 @@ namespace Scheduler
         {
             if (interval > 0)
             {
-                DateTime calculatedTimeToRunInMinutes;
-                calculatedTimeToRunInMinutes = now.AddMinutes(interval);
-                return calculatedTimeToRunInMinutes;
+                return now.AddMinutes(interval);
             }
             else
             {
@@ -150,9 +160,7 @@ namespace Scheduler
         {
             if(interval > 0)
             {
-                DateTime calculatedTimeToRunInSeconds;
-                calculatedTimeToRunInSeconds = now.AddSeconds(interval);
-                return calculatedTimeToRunInSeconds;
+                return now.AddSeconds(interval);
             }
             else
             {
