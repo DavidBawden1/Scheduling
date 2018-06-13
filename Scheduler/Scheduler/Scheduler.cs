@@ -22,10 +22,15 @@ namespace Scheduler
             _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime);
             if (DateTime.Now < _calculatedNextRun)
             {
-                TimeSpan timeToWait;
-                timeToWait = _calculatedNextRun - DateTime.Now;
-                //set up timer and make it tick until time to wait is 0. 
-                return true;
+                TimeSpan timeToWait = DateTime.Now - _calculatedNextRun;
+                int timeToSleep = timeToWait.Milliseconds;
+                while(DateTime.Now < _calculatedNextRun)
+                {
+                    Thread.Sleep(timeToSleep - 1000);
+                    return true ? DateTime.Now == _calculatedNextRun : false;
+                }
+                _calculatedNextRun = CalculateTimeToRun(_interval, _unitOfTime);
+                return false;
             }
             else
             {
