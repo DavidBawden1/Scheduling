@@ -52,10 +52,10 @@ namespace Scheduler
                     calculatedDateTime = CalculateTimeToRunInDays(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Weeks:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInWeeks(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Months:
-                    calculatedDateTime = DateTime.Now;
+                    calculatedDateTime = CalculateTimeToRunInMonths(interval, DateTime.Now);
                     break;
                 case UnitsOfTime.Years:
                     calculatedDateTime = DateTime.Now;
@@ -64,6 +64,22 @@ namespace Scheduler
                     throw new ArgumentException("The supplied unit of time was not valid!");
             }
             return calculatedDateTime;
+        }
+
+        internal DateTime CalculateTimeToRunInMonths(int interval, DateTime now)
+        {
+            if (interval > 0)
+            {
+                DateTime fromDate = now;
+                DateTime toDate = now.AddMonths(interval);
+                int daysInMonth = DateTime.DaysInMonth(toDate.Year, toDate.Month);
+                int day = Math.Min(fromDate.Day, daysInMonth);
+                return toDate = new DateTime(toDate.Year, toDate.Month, day, toDate.Hour, toDate.Minute, toDate.Second);
+            }
+            else
+            {
+                throw new ArgumentException("Interval cannot be 0!");
+            }
         }
 
         internal DateTime CalculateTimeToRunInWeeks(int interval, DateTime now)
